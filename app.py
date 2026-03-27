@@ -1,85 +1,162 @@
 import streamlit as st
-import json
 import time
 from workflow import app
 from langchain_core.messages import HumanMessage
+import pandas as pd
+import os
+from supabase import create_client, Client
 
-st.set_page_config(layout="wide", page_title="Enterprise OS")
+# --- SUPABASE CONFIG FOR SLA LISTING ---
+url = os.environ.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+supabase: Client = create_client(url, key)
 
-# --- UI HEADER ---
+st.set_page_config(layout="wide", page_title="Enterprise Agentic OS")
+
+# --- CUSTOM CSS FOR "TERMINAL" FEEL ---
+st.markdown("""
+    <style>
+    .node-box { border-left: 5px solid #00ff00; padding: 10px; margin: 10px 0; background-color: #1e1e1e; color: white; border-radius: 5px; }
+    .stButton>button { width: 100%; border-radius: 5px; height: 3em; }
+    </style>
+    """, unsafe_allow_html=True)
+
 st.title("🏢 ENTERPRISE AGENTIC OS v1.0")
 st.markdown("---")
 
-# --- 1. DEFINE THE THREE COLUMNS ---
-col1, col2, col3 = st.columns([1, 1, 1])
+# Initialize session state for user input and query
+if 'query' not in st.session_state: st.session_state.query = ""
+if 'show_onboard' not in st.session_state: st.session_state.show_onboard = False
+if 'show_transcript' not in st.session_state: st.session_state.show_transcript = False
+if 'show_procurements' not in st.session_state: st.session_state.show_procurements = False
+if 'show_other' not in st.session_state: st.session_state.show_other = False
 
+col1, col2 = st.columns([1, 1], gap="large")
+
+# --- COLUMN 1: INTERACTION & CONTROLS ---
 with col1:
-    st.subheader("📥 Input Command")
-    st.write("Triages requests, assesses risk, and executes enterprise tasks.")
+    st.subheader("📥 Process Selection")
     
-    # Quick buttons
-    if st.button("🚀 Onboard Sarah Jenkins"):
-        st.session_state.query = "Onboard Sarah Jenkins as Lead Data Scientist. She starts Monday."
-    if st.button("👥 Assing John as security lead"):
-        st.session_state.query = "In recent meeting john has been assigned as security team lead"
-    if st.button("📄 Send Procurement update"):
-        st.session_state.query = "Send a procurement update to the Finance team about the new server parts."
-    
-    # Input Area
-    query = st.text_area("Do you have any other query?", value=st.session_state.get('query', ""), height=100)
-    run_btn = st.button("Execute Workflow", type="primary")
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        if st.button("🚀 Onboarding"):
+            st.session_state.show_onboard = True
+    with c2:
+        if st.button("👥 Analyze Transcript"):
+            st.session_state.show_transcript = True
+    with c3:
+        if st.button("📄 Audit SLA"):
+            st.session_state.show_procurements = True
+    with c4:
+        if st.button("❓ Any Other Scenario"):
+            st.session_state.show_other = True
 
-# --- 2. EXECUTION LOGIC ---
-if run_btn and query:
-    # Initialize State
-    inputs = {
-        "messages": [HumanMessage(content=query)],
-        "audit_trail": [],
-        "task_status": "pending",
-        "context": {},
-        "risk_level": 0
-    }
+    # Onboarding Special Handling
+    if st.session_state.show_onboard:
+        st.info("Mention employee fullname, role and department in the text box below")
+        st.session_state.query = ""
+        st.session_state.show_onboard = False
 
-    # These containers will stay "open" so we can write to them from the loop
-    with col2:
-        st.subheader("📍 Agent Progress")
-        node_placeholder = st.container()
+    # Transcript Special Handling
+    if st.session_state.show_transcript:
+        st.info("Paste the Meeting script in the textbox below and click EXECUTE WORKFLOW")
+        st.session_state.query = ""
+        st.session_state.show_transcript = False
 
-    with col3:
-        st.subheader("📜 System Logs")
-        log_placeholder = st.container()
-
-    try:
-        # 3. STREAM THE WORKFLOW
-        # This mirrors your 'for output in app.stream' terminal code
-        for output in app.stream(inputs, config={"recursion_limit": 25}):
-            for node_name, state_update in output.items():
+    # SLA Special Handling
+    # SLA Special Handling
+    if st.session_state.show_procurements:
+        st.info("📊 Attempting to fetch live procurements...")
+        
+        try:
+            # 1. Try to fetch from Supabase
+            res = supabase.table("procurements").select("*").order("created_at", desc=True).limit(5).execute()
+            
+            if res.data:
+                df = pd.DataFrame(res.data)
+                available_cols = [c for c in ['id', 'item_name', 'created_at', 'status'] if c in df.columns]
+                st.table(df[available_cols])
                 
-                # Update Column 2 (Agent Actions)
-                with node_placeholder:
-                    st.markdown(f"**📍 Node Completed: {node_name.upper()}**")
-                    
-                    if "risk_level" in state_update:
-                        st.info(f"🛡️ Risk Assessment: {state_update['risk_level']}/10")
-                    
-                    if "execution_plan" in state_update:
-                        st.success(f"📝 Plan Generated: {len(state_update['execution_plan'])} steps.")
-                    
-                    if "task_status" in state_update:
-                        st.code(f"Status: {state_update['task_status']}")
-                    st.divider()
+                selected_id = st.selectbox("Select ID to Audit:", df['id'].tolist())
+                if st.button("Start SLA Audit"):
+                    st.session_state.query = f"Run SLA Procurement Audit for ID: {selected_id}"
+                    st.session_state.show_procurements = False
+                    st.rerun()
+            else:
+                st.warning("No procurement data found.")
+                
+        except Exception as e:
+            # 2. FALLBACK: If DB fails, don't crash. Show this instead:
+            st.error("⚠️ Database Connection Failed (Offline Mode)")
+            st.warning("Could not reach Supabase. You can manually enter an ID or prompt below to proceed with a simulated audit.")
+            
+            # Offer a "Simulated" path
+            if st.button("Proceed with Manual/Recent ID"):
+                # You can hardcode a 'test' ID here for the demo
+                st.session_state.query = "Run SLA Procurement Audit for ID: PROC-999-TEST"
+                st.session_state.show_procurements = False
+                st.rerun()
+    # Other Scenario
+    if st.session_state.show_other:
+        st.info("Please enter your query in the  textbox below and click EXECUTE WORKFLOW.")
+        st.session_state.query = ""
+        st.session_state.show_other = False
 
-                # Update Column 3 (Logs/JSON)
-                with log_placeholder:
-                    if "audit_trail" in state_update and state_update["audit_trail"]:
-                        # Show the most recent log entry in a JSON box
-                        st.json(state_update["audit_trail"][-1])
+    query = st.text_area("Textbox", value=st.session_state.query, height=100)
+    run_btn = st.button("EXECUTE WORKFLOW", type="primary")
 
-                # Small sleep to force Streamlit to "Draw" the update
-                time.sleep(0.5)
-        st.success("✅ WORKFLOW COMPLETE")
+# --- COLUMN 2: REAL-TIME AGENT TRACE ---
+with col2:
+    st.subheader("⚙️ Agentic Execution Trace")
+    status_container = st.container()
+    
+    if run_btn and query:
+        # Clear previous run
+        status_container.empty()
+        storage_mode = "Supabase Cloud DB"
+        inputs = {"messages": [HumanMessage(content=query)], "recovery_attempts": 0}
+        step_number = 1
+        try:
+            # Stream the workflow steps
+            for output in app.stream(inputs, config={"recursion_limit": 30}):
+                for node_name, state_update in output.items():
+                    with status_container:
+                        # Display the node progress
+                        st.markdown(f"""
+                            <div class="node-box">
+                                <b>📍 STEP {step_number}: {node_name.upper()} Agent working...</b>
+                            </div>
+                        """, unsafe_allow_html=True)
+                        
+                        # Show specific agent details
+                        if "risk_level" in state_update:
+                            st.caption(f"🛡️ Risk Score: {state_update['risk_level']}/10")
+                        
+                        if "task_status" in state_update:
+                            st.write(f"Current Status: `{state_update['task_status']}`")
+                        
+                        if "audit_trail" in state_update:
+                            for log in state_update["audit_trail"]:
+                                if "SENT_LOCAL" in str(log) or "status': 'SENT_LOCAL'" in str(log):
+                                    storage_mode = "Local Filesystem (logs/)"
+                            last_log = state_update["audit_trail"][-1]
+                            
+                            # Use .get() to avoid KeyErrors if a field is missing
+                            timestamp = last_log.get("timestamp", "00:00:00")
+                            agent = last_log.get("agent", "UNKNOWN")
+                            action = last_log.get("action", "Processing")
+                            # Some of your agents use 'reasoning' or 'details' instead of 'message'
+                            message = last_log.get("reasoning") or last_log.get("details") or "No details"
+                            status = state_update.get("task_status", "Active")
 
-    except Exception as e:
-        with col2:
-            st.error(f"💥 SYSTEM CRASH: {str(e)}")
-            st.warning("Check terminal for details.")
+                            # Display as a clean, single line
+                            st.write(f"🕒 **{timestamp}** | 🤖 **{agent}** | ⚡ **{action}**")
+                            st.caption(f"💬 {message} | 📊 Status: {status}")
+                        st.divider()
+                        step_number += 1
+                        time.sleep(1) # For demo visual effect
+                        
+            st.success(f"✅ Workflow Execution Finished. Repository: {storage_mode}")
+            
+        except Exception as e:
+            st.error(f"Critical System Failure: {str(e)}")

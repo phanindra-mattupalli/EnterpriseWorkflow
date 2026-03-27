@@ -12,24 +12,24 @@ def router(state: AgentState):
     status = state.get("task_status")
     next_hop = state.get("next_step")
 
-    # 1. Security First
-    if status == "flagged":
+    # 1. Security/Escalation Path
+    if status == "flagged" or next_hop == "escalator":
         return "escalator"
     
-    # 2. Planning Phase
+    # 2. Planning Path
     if status == "active":
         return "architect"
     
-    # 3. Execution Phase
+    # 3. Execution Path (Handles both first run and Healer retries)
     if status == "planned" or status == "retrying":
         return "executor"
     
-    # 4. Verification/Healing Phase
+    # 4. Verification & Self-Healing Path
     if status == "completed":
         return "healer"
     
-    # 5. Exit
-    if status == "verified" or next_hop == "end":
+    # 5. Completion Path
+    if status == "verified" or status == "escalated" or next_hop == "end":
         return END
 
     return END
@@ -37,21 +37,21 @@ def router(state: AgentState):
 # --- GRAPH DEFINITION ---
 workflow = StateGraph(AgentState)
 
-# Add all 5 Agents as Nodes
+# Add Nodes
 workflow.add_node("classifier", classifier_agent)
 workflow.add_node("escalator", escalator_agent)
 workflow.add_node("architect", architect_agent)
 workflow.add_node("executor", executor_agent)
 workflow.add_node("healer", healer_agent)
 
-# Set the Entry Point
+# Entry Point
 workflow.set_entry_point("classifier")
 
-# Define the Paths
+# Define Edges with the Router
 workflow.add_conditional_edges(
     "classifier",
     router,
-    {"escalator": "escalator", "architect": "architect"}
+    {"escalator": "escalator", "architect": "architect", END:END}
 )
 
 workflow.add_conditional_edges(
@@ -69,10 +69,14 @@ workflow.add_conditional_edges(
 workflow.add_conditional_edges(
     "healer",
     router,
-    {"executor": "executor", END: END} # The Healing Loop!
+    {
+        "executor": "executor",
+        "escalator": "escalator",
+        END: END  # Use the END constant as both key and value
+    }
 )
 
 workflow.add_edge("escalator", END)
 
-# Final Compilation
+# Compile the final app
 app = workflow.compile()
