@@ -1,0 +1,14 @@
+{
+    "laptops": {
+        "stock": 15,
+        "min_required": 5
+    },
+    "servers": {
+        "stock": 2,
+        "min_required": 1
+    },
+    "emergency_kits": {
+        "stock": 10,
+        "min_required": 10
+    }
+}
