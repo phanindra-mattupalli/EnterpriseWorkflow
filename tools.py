@@ -6,12 +6,12 @@ from datetime import datetime
 import os
 
 # Create the db folder if it doesn't exist just in case
-if not os.path.exists('db'):
-    os.makedirs('db')
+if not os.path.exists('logs'):
+    os.makedirs('logs')
 
 def load_db(file_name):
     # This ensures it looks inside the db/ folder
-    path = os.path.join('db', file_name)
+    path = os.path.join('logs', file_name)
     try:
         with open(path, 'r') as f:
             return json.load(f)
