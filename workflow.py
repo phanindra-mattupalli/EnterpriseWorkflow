@@ -13,71 +13,47 @@ def router(state: AgentState):
     next_hop = state.get("next_step")
     attempts = state.get("recovery_attempts", 0)
 
-    # 1. Security/Escalation Path
     if status == "flagged" or next_hop == "escalator":
         return "escalator"
-    
-    # 2. Planning Path
     if status == "active":
         return "architect"
     
-    # 3. Execution Path (Handles both first run and Healer retries)
+    # ADDED: If status is failed, we must route to the healer
     if status == "planned" or status == "retrying":
         return "executor"
     
-    # 4. Verification & Self-Healing Path
-    if status == "completed":
+    if status == "failed" or status == "completed":
         return "healer"
     
-    # 5. Completion Path
-    if status == "verified" or status == "escalated" or attempts > 2:
-        return END
+    if status == "verified" or status == "failed_critical" or attempts > 2:
+        return "end"
+    
+    return "end"
 
-    return END
-
-# --- GRAPH DEFINITION ---
+# --- THE FIX: Define workflow BEFORE using it ---
 workflow = StateGraph(AgentState)
 
-# Add Nodes
 workflow.add_node("classifier", classifier_agent)
 workflow.add_node("escalator", escalator_agent)
 workflow.add_node("architect", architect_agent)
 workflow.add_node("executor", executor_agent)
 workflow.add_node("healer", healer_agent)
 
-# Entry Point
 workflow.set_entry_point("classifier")
 
-# Define Edges with the Router
+# Use "end": END to map the router's string to the actual exit
 workflow.add_conditional_edges(
-    "classifier",
-    router,
-    {"escalator": "escalator", "architect": "architect", END:END}
+    "classifier", router, {"escalator": "escalator", "architect": "architect", "end": END}
 )
-
 workflow.add_conditional_edges(
-    "architect",
-    router,
-    {"executor": "executor"}
+    "architect", router, {"executor": "executor", "end": END}
 )
-
 workflow.add_conditional_edges(
-    "executor",
-    router,
-    {"healer": "healer"}
+    "executor", router, {"healer": "healer", "end": END}
 )
-
 workflow.add_conditional_edges(
-    "healer",
-    router,
-    {
-        "executor": "executor",
-        "escalator": "escalator",
-        END: END  # Use the END constant as both key and value
-    }
+    "healer", router, {"executor": "executor", "escalator": "escalator", "end": END}
 )
 
 workflow.add_edge("escalator", END)
-
-# Compile the final app
 app = workflow.compile()
