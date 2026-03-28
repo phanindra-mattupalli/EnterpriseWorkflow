@@ -115,7 +115,7 @@ with col2:
         status_container.empty()
         storage_mode = "Supabase Cloud DB"
         inputs = {"messages": [HumanMessage(content=query)], "recovery_attempts": 0}
-        step_number = 1
+        #step_number = 1
         try:
             # Stream the workflow steps
             for output in app.stream(inputs, config={"recursion_limit": 30}):
@@ -124,7 +124,7 @@ with col2:
                         # Display the node progress
                         st.markdown(f"""
                             <div class="node-box">
-                                <b>📍 STEP {step_number}: {node_name.upper()} Agent working...</b>
+                                <b>📍{node_name.upper()} Agent working...</b>
                             </div>
                         """, unsafe_allow_html=True)
                         
@@ -148,12 +148,30 @@ with col2:
                             # Some of your agents use 'reasoning' or 'details' instead of 'message'
                             message = last_log.get("reasoning") or last_log.get("details") or "No details"
                             status = state_update.get("task_status", "Active")
+                            plan_from_log = last_log.get("plan_details")
+                            exec_from_log = last_log.get("execution_summary")
 
                             # Display as a clean, single line
                             st.write(f"🕒 **{timestamp}** | 🤖 **{agent}** | ⚡ **{action}**")
                             st.caption(f"💬 {message} | 📊 Status: {status}")
+                            
+                            # 2. Plan Display (Triggers during ARCHITECT node)
+                            if plan_from_log:
+                                with st.expander(f"📋 {action}", expanded=False):
+                                    for step in plan_from_log:
+                                        st.write(f"✅ {step}")
+
+                            # 3. Execution Display (Triggers during EXECUTOR node)
+                            if exec_from_log:
+                                with st.expander(f"🚀 {action}", expanded=False):
+                                    for res in exec_from_log:
+                                        if "ERROR" in res or "Breach" in res:
+                                            st.error(res)
+                                        else:
+                                            st.success(res)
+
                         st.divider()
-                        step_number += 1
+                        #step_number += 1
                         time.sleep(1) # For demo visual effect
                         
             st.success(f"✅ Workflow Execution Finished. Repository: {storage_mode}")

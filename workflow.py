@@ -11,6 +11,7 @@ from agents import (
 def router(state: AgentState):
     status = state.get("task_status")
     next_hop = state.get("next_step")
+    attempts = state.get("recovery_attempts", 0)
 
     # 1. Security/Escalation Path
     if status == "flagged" or next_hop == "escalator":
@@ -29,7 +30,7 @@ def router(state: AgentState):
         return "healer"
     
     # 5. Completion Path
-    if status == "verified" or status == "escalated" or next_hop == "end":
+    if status == "verified" or status == "escalated" or attempts > 2:
         return END
 
     return END

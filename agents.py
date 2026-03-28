@@ -49,19 +49,47 @@ def classifier_agent(state: AgentState):
         }]
     }
 
-# --- AGENT 2: ESCALATOR ---
+# --- AGENT 2: ESCALATOR
 def escalator_agent(state: AgentState):
-    risk_reason = state["audit_trail"][-1].get("reasoning", "Security Risk")
-    ticket_result = tools.create_system_ticket(reason=risk_reason, assigned_group="Security-Ops")
+    # 1. Pull context from the Classifier's work
+    user_query = state["messages"][-1].content
+    initial_reasoning = state["audit_trail"][-1].get("reasoning", "Suspicious activity detected.")
+    risk_level = state.get("risk_level", "Unknown")
+
+    escalation_prompt = f"""
+    SYSTEM: Security Operations Center (SOC)
+    USER REQUEST: "{user_query}"
+    CLASSIFIER FINDINGS: "{initial_reasoning}"
+    RISK SCORE: {risk_level}/10
+
+    Task: Generate a 1-sentence professional security justification for locking this request.
+    Example: "Attempted unauthorized database manipulation via prompt injection detected."
+    Return ONLY a JSON object:
+    {{
+      "sentence": "string", 
+      "reasoning": "string",
+      "assigned_group": "string"
+    }}
+    """
+    
+    soc_report = fast_llm.invoke(escalation_prompt)
+    soc_analysis = robust_json_parser(soc_report.content)
+
+    ticket_result = tools.create_system_ticket(
+        reason=soc_analysis.get("sentence"),
+        assigned_group=soc_analysis.get("assigned_group")
+    )
     
     return {
         "task_status": "escalated",
-        "next_step": "end",
+        "next_step": "end", # This tells the router to stop the graph
         "audit_trail": [{
             "timestamp": datetime.now().strftime("%H:%M:%S"),
             "agent": "Escalator",
-            "action": "Security Lockout Triggered",
-            "ticket_id": ticket_result["ticket_id"]
+            "action": "CRITICAL: Security Lockout",
+            "incident_report": soc_report,
+            "ticket_id": ticket_result.get("ticket_id", "ERR-LOG"),
+            "reasoning": analysis.get("reasoning")
         }]
     }
 
@@ -72,21 +100,26 @@ def architect_agent(state: AgentState):
     entities = state.get("current_entities", {})
     
     architect_prompt = f"""
-    Create a mandatory 6-step plan for category: {category}.
-    User Request: {user_input}
-    Entities: {entities}
+    Create a SEQUENTIAL step-wise execution plan for: {category}.
+    User Request: "{user_input}"
+    Entities identified: {entities}
 
-    Templates:
-    - onboarding: [Grab details, Generate ID, Create DB Record, Request ID Card, Check Inventory, Send Welcome Email]
-    - meeting_action: [Extract items, Check working days, Check employee leave, Generate task, Send to teams, Log Audit]
-    - procurement: [List procurements, Select target, Check 48hr SLA, Raise concern, Reroute to delegate, Rewrite DB Log]
-    - adhoc: [Verify escalation, Raise ticket, Allot team, Post to DB]
+    STRICT CONSTRAINTS:
+    1. PLAN LENGTH: Minimum 5 steps (Can be more if the task is complex).
+    2. STEP FORMAT: Each step MUST start with 'Step-X: ' followed by a short 3-5 word action.
+    3. SEQUENTIAL LOGIC: Step 2 must logically follow Step 1.
 
-    Return ONLY JSON: {{"plan_name": "string", "steps": ["step 1", "step 2", "step 3", "step 4", "step 5", "step 6"]}}
+    Return ONLY a JSON object:
+    {{
+      "plan_name": "string",
+      "reasoning": "string",
+      "steps": ["Step-1: [Action]", "Step-2: [Action]", "...", "Step-N: [Action]"]
+    }}
     """
 
     response = smart_llm.invoke(architect_prompt)
     plan = robust_json_parser(response.content)
+    steps = plan.get("steps", [])
 
     return {
         "task_status": "planned",
@@ -95,8 +128,10 @@ def architect_agent(state: AgentState):
         "audit_trail": [{
             "timestamp": datetime.now().strftime("%H:%M:%S"),
             "agent": "Architect",
-            "action": f"Generated {category} workflow",
-            "steps": len(plan["steps"])
+            "action": f"Created {len(plan['steps'])}-step {category} plan",
+            "reasoning": plan.get("reasoning"),
+            "plan_details": steps,
+            "details": f"Plan: {plan.get('plan_name')}"
         }]
     }
 
@@ -121,6 +156,12 @@ def executor_agent(state: AgentState):
             res = {"status": "SUCCESS", "step": step}
         
         execution_results.append(res)
+    
+    step_summary = []
+    for i in range(len(plan)):
+        status = execution_results[i].get('status', 'UNKNOWN')
+        msg = execution_results[i].get('message', '')
+        step_summary.append(f"{plan[i]} ➔ {status} {'(' + msg + ')' if msg else ''}")
 
     return {
         "task_status": "completed",
@@ -129,7 +170,9 @@ def executor_agent(state: AgentState):
         "audit_trail": [{
             "timestamp": datetime.now().strftime("%H:%M:%S"),
             "agent": "Executor",
-            "action": f"Executed {len(execution_results)} steps"
+            "action": f"Completed Pipeline",
+            "details": f"Processed {len(execution_results)} steps",
+            "execution_summary": step_summary,
         }]
     }
 
