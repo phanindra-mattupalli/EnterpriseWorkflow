@@ -64,30 +64,18 @@ def random_data_generators():
             "department": random.choice(["Engineering", "Sales", "HR"]),
             "status": "active"
         },
-        "devices_inventory": lambda: {
+        "inventory": lambda: {
             "id": str(uuid.uuid4()),
             "device_type": random.choice(["laptop", "monitor"]),
             "model": f"Model-{random.randint(100,999)}",
             "location": random.choice(["HQ", "Branch"]),
             "status": random.choice(["available", "allocated"])
         },
-        "onboarding_requests": lambda: {
+        "notifications": lambda: {
             "id": str(uuid.uuid4()),
             "employee_id": None,
             "start_date": (datetime.now() + timedelta(days=random.randint(1,30))).strftime("%Y-%m-%d"),
             "status": "pending"
-        },
-        "meetings": lambda: {
-            "id": str(uuid.uuid4()),
-            "title": f"Team Meeting {random.randint(1,99)}",
-            "scheduled_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-            "transcript": "Sample transcript: John to review Q1 report by Friday. Sarah to check budget with finance."
-        },
-        "meeting_actions": lambda: {
-            "id": str(uuid.uuid4()),
-            "meeting_id": None,
-            "description": f"Task {random.randint(1,99)}",
-            "status": "open"
         },
         "procurements": lambda: {
             "id": str(uuid.uuid4()),
@@ -96,13 +84,6 @@ def random_data_generators():
             "vendor": f"Vendor{random.randint(1,10)}",
             "status": "pending"
         },
-        "procurement_approvals": lambda: {
-            "id": str(uuid.uuid4()),
-            "procurement_id": None,
-            "approver_id": None,
-            "status": "pending",
-            "last_action_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-        },
         "tickets": lambda: {
             "id": str(uuid.uuid4()),
             "source": random.choice(["onboarding", "meeting", "procurement"]),
@@ -110,24 +91,13 @@ def random_data_generators():
             "priority": random.choice(["low", "medium", "high"]),
             "status": "open"
         },
-        "audit_logs": lambda: {
-            "id": str(uuid.uuid4()),
-            "scenario": random.choice(["onboarding", "meeting_action", "procurement"]),
-            "step_name": f"step_{random.randint(1,5)}",
-            "agent_name": random.choice(["Ingestion", "Provisioning", "Audit"]),
-            "status": random.choice(["ok", "error", "escalated"]),
-            "details": {"message": f"Random log entry {random.randint(1,99)}"}
-        }
     }
 
 TABLES = [
     ("employees", "Employees"),
-    ("devices_inventory", "Devices Inventory"),
-    ("onboarding_requests", "Onboarding Requests"),
-    ("meetings", "Meetings"),
-    ("meeting_actions", "Meeting Actions"),
+    ("inventory", "Inventory"),
+    ("notifications", "Notifications"),
     ("procurements", "Procurements"),
-    ("procurement_approvals", "Procurement Approvals"),
     ("tickets", "Tickets"),
     ("audit_logs", "Audit Logs"),
 ]

@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
-from typing import Annotated, TypedDict, Union, List
-from langgraph.graph.message import add_messages
+from typing import TypedDict, List, Dict, Any, Optional
+from langgraph.graph import add_messages
+from typing_extensions import Annotated
 from langchain_groq import ChatGroq
 
 # Load environment variables
@@ -16,10 +17,13 @@ def append_audit(left: list, right: list) -> list:
 
 class AgentState(TypedDict):
     messages: Annotated[list, add_messages]
-    audit_trail: Annotated[List[dict], append_audit] 
-    task_status: str 
-    risk_level: int 
+    audit_trail: Annotated[List[dict], append_audit]
+    task_status: str
+    risk_level: int
     context: dict
     next_step: str
-    recovery_attempts: int 
-    current_entities: dict 
+    recovery_attempts: int
+    current_entities: dict
+    plan_details: list
+    scenario: Optional[str]
+    final_outcome: Optional[Dict[str, Any]]

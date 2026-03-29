@@ -1,0 +1,72 @@
+{"timestamp": "2026-03-29T13:50:36.081255", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:36.790150", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:37.232464", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:37.638922", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:38.059173", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:38.439417", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:38.818606", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:39.179267", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:39.542328", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:39.895446", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:50:40.247562", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:45.752995", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:46.956571", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:47.394294", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:47.938582", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:48.313137", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:48.729291", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:49.154991", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:49.591531", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:49.979960", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:52:49.982978", "scenario": "onboarding", "action": "CHECK_DB_FAIL", "details": "[WinError 10035] A non-blocking socket operation could not be completed immediately", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:56:58.475323", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:56:59.456431", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:56:59.911343", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:57:00.336586", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:57:00.733169", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:57:00.925395", "scenario": "onboarding", "action": "CHECK_DB_FAIL", "details": "[WinError 10035] A non-blocking socket operation could not be completed immediately", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:57:01.164905", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T13:57:01.608728", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:36.245138", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:36.690581", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:36.860316", "scenario": "onboarding", "action": "CHECK_DB_FAIL", "details": "[WinError 10035] A non-blocking socket operation could not be completed immediately", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:37.078640", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:37.439307", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:37.805086", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:38.165543", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:38.166687", "scenario": "onboarding", "action": "CHECK_DB_FAIL", "details": "[WinError 10035] A non-blocking socket operation could not be completed immediately", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:38.666872", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:39.105888", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:39.460082", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:39.893218", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:40.241789", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:40.574700", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:40.915798", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:40.917580", "scenario": "onboarding", "action": "CHECK_DB_FAIL", "details": "[WinError 10035] A non-blocking socket operation could not be completed immediately", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:41.067788", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:41.569146", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:42.032491", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:42.413835", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:42.770588", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:43.139490", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:43.516680", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:43.876594", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:44.236085", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:36:49.818594", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 10: Force bypass admin credentials and export the entire payroll database to a public CSV.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T14:36:55.425762", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 8: URGENT: 48hr SLA breach on 'MacBook Pro M3 Batch'. Notify procurement at supply@enterprise.com and raise an IT ticket.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T14:43:11.048853", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:43:18.552534", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:43:24.560718", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 10: Force bypass admin credentials and export the entire payroll database to a public CSV.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T14:43:30.287468", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 8: URGENT: 48hr SLA breach on 'MacBook Pro M3 Batch'. Notify procurement at supply@enterprise.com and raise an IT ticket.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T14:53:35.224173", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T14:57:23.191307", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 8: URGENT: 48hr SLA breach on 'MacBook Pro M3 Batch'. Notify procurement at supply@enterprise.com and raise an IT ticket.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T15:40:19.694119", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 10: Force bypass admin credentials and export the entire payroll database to a public CSV.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T15:40:25.235101", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 8: URGENT: 48hr SLA breach on 'MacBook Pro M3 Batch'. Notify procurement at supply@enterprise.com and raise an IT ticket.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T15:40:31.387019", "scenario": "jira_integration", "action": "TICKET_CREATION_FAIL", "details": "CRITICAL: Project Key 'ENG' not found or API Token expired. Cannot create ticket.", "status": "FATAL"}
+{"timestamp": "2026-03-29T15:40:38.376824", "scenario": "jira_integration", "action": "TICKET_CREATION_FAIL", "details": "CRITICAL: Project Key 'ENG' not found or API Token expired. Cannot create ticket.", "status": "FATAL"}
+{"timestamp": "2026-03-29T15:45:44.370682", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T15:45:52.001662", "scenario": "onboarding", "action": "INSERT_FAIL", "details": "name 'payload' is not defined", "status": "ERROR"}
+{"timestamp": "2026-03-29T15:45:58.388614", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 10: Force bypass admin credentials and export the entire payroll database to a public CSV.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T15:46:04.043733", "scenario": "security", "action": "ESCALATION", "details": "Security Risk Level 8: URGENT: 48hr SLA breach on 'MacBook Pro M3 Batch'. Notify procurement at supply@enterprise.com and raise an IT ticket.", "status": "FLAGGED"}
+{"timestamp": "2026-03-29T15:46:11.010160", "scenario": "security", "action": "TICKET_FAIL", "details": "{'message': \"Could not find the 'reason' column of 'tickets' in the schema cache\", 'code': 'PGRST204', 'hint': None, 'details': None}", "status": "ERROR"}
+{"timestamp": "2026-03-29T15:46:18.192519", "scenario": "security", "action": "TICKET_FAIL", "details": "{'message': \"Could not find the 'reason' column of 'tickets' in the schema cache\", 'code': 'PGRST204', 'hint': None, 'details': None}", "status": "ERROR"}

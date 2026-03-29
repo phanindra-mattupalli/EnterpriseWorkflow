@@ -1,59 +1,60 @@
 from langgraph.graph import StateGraph, END
 from state import AgentState
 from agents import (
-    classifier_agent,
-    escalator_agent,
-    architect_agent,
-    executor_agent,
-    healer_agent  
+    classifier_agent, validator_agent, reasoner_agent, 
+    tool_executor_node, healer_agent, escalator_agent
 )
+from langchain_core.messages import ToolMessage
 
 def router(state: AgentState):
     status = state.get("task_status")
-    next_hop = state.get("next_step")
-    attempts = state.get("recovery_attempts", 0)
+    risk = state.get("risk_level", 0)
+    intent = state.get("next_step", "")
+    messages = state.get("messages", [])
 
-    if status == "flagged" or next_hop == "escalator":
+    # 1. PRIORITY: If we just came back from a tool, go to Reasoner to evaluate
+    if messages and isinstance(messages[-1], ToolMessage):
+        return "reasoner"
+
+    # 2. Security/Escalation Logic
+    if status == "flagged":
+        # Only bypass escalation for Procurement if risk is manageable
+        if intent == "PROCUREMENT" and risk <= 8:
+            return "validator"
         return "escalator"
-    if status == "active":
-        return "architect"
+        
+    # 3. Standard Flow
+    if status == "active": return "validator"
+    if status == "validated" or status == "retrying": return "reasoner"
+    if status == "executing": return "tools"
     
-    # ADDED: If status is failed, we must route to the healer
-    if status == "planned" or status == "retrying":
-        return "executor"
+    # 4. Termination/Recovery
+    if status == "completed": return END
+    if status == "failed": return "healer"
     
-    if status == "failed" or status == "completed":
-        return "healer"
-    
-    if status == "verified" or status == "failed_critical" or attempts > 2:
-        return "end"
-    
-    return "end"
+    return END
 
-# --- THE FIX: Define workflow BEFORE using it ---
 workflow = StateGraph(AgentState)
 
+# Nodes
 workflow.add_node("classifier", classifier_agent)
-workflow.add_node("escalator", escalator_agent)
-workflow.add_node("architect", architect_agent)
-workflow.add_node("executor", executor_agent)
+workflow.add_node("validator", validator_agent)
+workflow.add_node("reasoner", reasoner_agent)
+workflow.add_node("tools", tool_executor_node)
 workflow.add_node("healer", healer_agent)
+workflow.add_node("escalator", escalator_agent)
 
 workflow.set_entry_point("classifier")
 
-# Use "end": END to map the router's string to the actual exit
-workflow.add_conditional_edges(
-    "classifier", router, {"escalator": "escalator", "architect": "architect", "end": END}
-)
-workflow.add_conditional_edges(
-    "architect", router, {"executor": "executor", "end": END}
-)
-workflow.add_conditional_edges(
-    "executor", router, {"healer": "healer", "end": END}
-)
-workflow.add_conditional_edges(
-    "healer", router, {"executor": "executor", "escalator": "escalator", "end": END}
-)
+# Conditional Edges
+# Every node uses the router to decide the next hop
+workflow.add_conditional_edges("classifier", router)
+workflow.add_conditional_edges("validator", router)
+workflow.add_conditional_edges("reasoner", router)
+workflow.add_conditional_edges("tools", router)
+workflow.add_conditional_edges("healer", router)
 
+# Escalator is a terminal node for security
 workflow.add_edge("escalator", END)
+
 app = workflow.compile()

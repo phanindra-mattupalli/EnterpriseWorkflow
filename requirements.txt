@@ -1,5 +1,8 @@
-python-dotenv
-typing
-langgraph
-langchain_groq
 streamlit
+python-dotenv
+supabase
+pandas
+langchain-core
+langchain-groq
+langgraph
+typing_extensions
